@@ -1,0 +1,12 @@
+spring:
+    flyway:
+        clean-disabled: false
+        enabled: true
+        schemas: ava_lab
+    jpa:
+        properties:
+            hibernate:
+                default_schema: ava_lab
+                jdbc:
+                    lob:
+                        non_contextual_creation: true
