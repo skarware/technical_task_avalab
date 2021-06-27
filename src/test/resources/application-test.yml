@@ -1,12 +1,14 @@
 spring:
-    flyway:
-        clean-disabled: false
-        enabled: true
-        schemas: ava_lab
-    jpa:
-        properties:
-            hibernate:
-                default_schema: ava_lab
-                jdbc:
-                    lob:
-                        non_contextual_creation: true
+  flyway:
+    clean-disabled: false
+    enabled: true
+    schemas: ava_lab
+  jpa:
+    hibernate.ddl-auto: none
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        default_schema: ava_lab
+        jdbc:
+          lob:
+            non_contextual_creation: true

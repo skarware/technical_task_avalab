@@ -1,10 +1,8 @@
 package dev.skaringa.avalab.repository
 
 import dev.skaringa.avalab.SpecBaseIT
-import dev.skaringa.avalab.entity.OcrData
+import dev.skaringa.avalab.provider.OcrDataProvider
 import org.springframework.beans.factory.annotation.Autowired
-
-import java.time.LocalDateTime
 
 class OcrDataRepositorySpec extends SpecBaseIT {
     @Autowired
@@ -12,7 +10,7 @@ class OcrDataRepositorySpec extends SpecBaseIT {
 
     def "should save entity to database and return"() {
         given: "ocr data entry"
-        def ocrData = new OcrData(1, 2, "word", LocalDateTime.now())
+        def ocrData = OcrDataProvider.entity()
 
         when: "save is invoked"
         def result = ocrDataRepository.save(ocrData)
