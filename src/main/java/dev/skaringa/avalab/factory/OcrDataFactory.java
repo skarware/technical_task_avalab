@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class OcrDataFactory {
     public OcrData toEntity(CreatableOcrData source) {
         return OcrData.builder()
-                .externalId(source.getForeignId())
+                .externalId(source.getForeign_id())
                 .word(source.getWord())
                 .createdAt(source.getCreated())
                 .build();

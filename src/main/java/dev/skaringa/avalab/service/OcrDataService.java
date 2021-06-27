@@ -7,11 +7,17 @@ import dev.skaringa.avalab.repository.OcrDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OcrDataService {
     private final OcrDataFactory ocrDataFactory;
     private final OcrDataRepository ocrDataRepository;
+
+    public List<OcrData> getAll() {
+        return ocrDataRepository.findAll();
+    }
 
     public OcrData create(CreatableOcrData creatableOcrData) {
         OcrData toSave = ocrDataFactory.toEntity(creatableOcrData);

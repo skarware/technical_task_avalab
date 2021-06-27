@@ -14,7 +14,7 @@ class OcrDataFactorySpec extends Specification {
         def entity = factory.toEntity(dto)
 
         then: "entity has correct values"
-        entity.externalId == dto.foreignId
+        entity.externalId == dto.foreign_id
         entity.word == dto.word
         entity.createdAt == dto.created
     }

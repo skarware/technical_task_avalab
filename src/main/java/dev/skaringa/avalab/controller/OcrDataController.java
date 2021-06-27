@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @CrossOrigin("*")
@@ -16,6 +17,11 @@ import javax.validation.Valid;
 @RequestMapping("api")
 public class OcrDataController {
     private final OcrDataService ocrDataService;
+
+    @GetMapping("all")
+    public List<OcrData> getAll() {
+        return ocrDataService.getAll();
+    }
 
     @PostMapping("migration/ocr")
     public OcrData create(@Valid @RequestBody CreatableOcrData creatableOcrData) {

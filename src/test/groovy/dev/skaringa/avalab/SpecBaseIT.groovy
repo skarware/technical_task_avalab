@@ -1,5 +1,7 @@
 package dev.skaringa.avalab
 
+import dev.skaringa.avalab.provider.OcrDataProvider
+import dev.skaringa.avalab.repository.OcrDataRepository
 import groovy.json.JsonGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -36,11 +38,20 @@ abstract class SpecBaseIT extends Specification {
     @Autowired
     protected MockMvc mockMvc
 
+    @Autowired
+    private OcrDataRepository ocrDataRepository
+
     protected static def randomId() {
         return RANDOM.nextLong()
     }
 
     protected static def randomString() {
         return UUID.randomUUID().toString()
+    }
+
+    protected def createOcrData(Map<String, Object> props = [:]) {
+        def ocrData = OcrDataProvider.entity(
+                [foreign_id: randomId(), word: randomString()] + props)
+        return ocrDataRepository.save(ocrData)
     }
 }
