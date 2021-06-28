@@ -13,8 +13,6 @@ import spock.lang.Specification
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
 
 import static java.time.format.DateTimeFormatter.*
 
@@ -29,11 +27,6 @@ abstract class SpecBaseIT extends Specification {
             .addConverter(LocalDate) { it.format(ISO_LOCAL_DATE) }
             .addConverter(LocalTime) { it.format(ISO_LOCAL_TIME) }
             .build()
-    protected static final DateTimeFormatter JSON_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .append(ISO_LOCAL_DATE)
-            .appendLiteral(' ')
-            .append(ISO_LOCAL_TIME)
-            .toFormatter()
 
     @Autowired
     protected MockMvc mockMvc
@@ -50,8 +43,7 @@ abstract class SpecBaseIT extends Specification {
     }
 
     protected def createOcrData(Map<String, Object> props = [:]) {
-        def ocrData = OcrDataProvider.entity(
-                [foreign_id: randomId(), word: randomString()] + props)
+        def ocrData = OcrDataProvider.entity([foreign_id: randomId(), word: randomString()] + props)
         return ocrDataRepository.save(ocrData)
     }
 }

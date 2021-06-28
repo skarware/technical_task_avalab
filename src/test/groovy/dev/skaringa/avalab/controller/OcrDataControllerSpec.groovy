@@ -9,6 +9,7 @@ import org.springframework.test.jdbc.JdbcTestUtils
 
 import java.time.LocalDateTime
 
+import static java.time.format.DateTimeFormatter.ofPattern
 import static org.hamcrest.Matchers.hasSize
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -64,7 +65,7 @@ class OcrDataControllerSpec extends SpecBaseIT {
                 .andExpect(jsonPath('$.externalId').value(dto.foreign_id))
                 .andExpect(jsonPath('$.word').value(dto.word))
                 .andExpect(jsonPath('$.createdAt')
-                        .value(LocalDateTime.from(JSON_DATE_TIME_FORMATTER.parse(dto.created)).toString()))
+                        .value(LocalDateTime.parse(dto.created, ofPattern("yyyy-MM-dd HH:mm:ss")).toString()))
     }
 
     def "POST /api/migration/ocr should return 400 when incomplete request is sent"() {

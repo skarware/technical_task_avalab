@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 class OcrDataProvider {
     private static final def FOREIGN_ID = 1
     private static final def WORD = "word"
-    private static final def CREATED_AT = LocalDateTime.of(2021, 6, 26, 21, 58, 30, 123456000)
+    private static final def CREATED_AT = LocalDateTime.of(2021, 6, 26, 21, 58, 30)
     private static final Map SAMPLE = [foreign_id: FOREIGN_ID, word: WORD, created: CREATED_AT]
 
     static def creatableDto(Map<String, Object> map = [:]) {
