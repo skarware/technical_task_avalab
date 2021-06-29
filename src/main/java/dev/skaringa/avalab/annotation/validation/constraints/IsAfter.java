@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = DateValidator.class)
 @Documented
 public @interface IsAfter {
-    String message() default "Provided date time is too old";
+    String message() default "date time is too old";
 
     Class<?>[] groups() default {};
 

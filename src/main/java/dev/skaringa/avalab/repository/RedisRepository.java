@@ -1,6 +1,7 @@
 package dev.skaringa.avalab.repository;
 
 import dev.skaringa.avalab.entity.OcrData;
+import dev.skaringa.avalab.exception.SystemException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.redis.core.HashOperations;
@@ -35,6 +36,10 @@ public class RedisRepository {
     public void flush() {
         log.info("/api/cached/flush was called, flushing the cache.");
         List<OcrData> ocrDataList = findAll();
+        if (ocrDataList.isEmpty()) {
+            throw SystemException.notFound("Nothing to flush, no entries in redis repository found");
+        }
+
         Set<Long> externalIds = extractExternalIds(ocrDataList);
         hashOperations.delete(OCR_DATA_CACHE, externalIds.toArray());
     }

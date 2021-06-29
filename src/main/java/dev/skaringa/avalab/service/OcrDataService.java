@@ -2,6 +2,7 @@ package dev.skaringa.avalab.service;
 
 import dev.skaringa.avalab.dto.CreatableOcrData;
 import dev.skaringa.avalab.entity.OcrData;
+import dev.skaringa.avalab.exception.SystemException;
 import dev.skaringa.avalab.factory.OcrDataFactory;
 import dev.skaringa.avalab.repository.OcrDataRepository;
 import dev.skaringa.avalab.repository.RedisRepository;
@@ -29,7 +30,8 @@ public class OcrDataService {
     }
 
     public OcrData getByForeignIdCached(Long id) {
-        return redisRepository.findByForeignId(id).orElseThrow();
+        return redisRepository.findByForeignId(id)
+                .orElseThrow(() -> SystemException.notFound("Orc data entry not found by foreign id " + id));
     }
 
     //    @CachePut(value = "ocrDataCache", key = "#result.externalId")
