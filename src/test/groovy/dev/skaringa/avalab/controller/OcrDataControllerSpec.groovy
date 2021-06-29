@@ -3,6 +3,7 @@ package dev.skaringa.avalab.controller
 import dev.skaringa.avalab.SpecBaseIT
 import dev.skaringa.avalab.repository.OcrDataRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.redis.core.HashOperations
 import org.springframework.http.MediaType
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.test.jdbc.JdbcTestUtils
@@ -23,6 +24,9 @@ class OcrDataControllerSpec extends SpecBaseIT {
 
     @Autowired
     private JdbcTemplate jdbcTemplate
+
+    @Autowired
+    private HashOperations hashOperations
 
     def setup() {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "ava_lab.ocr_data")
@@ -68,7 +72,7 @@ class OcrDataControllerSpec extends SpecBaseIT {
                 .andExpect(jsonPath('$.[*].createdAt', containsInAnyOrder(createdAtDates)))
     }
 
-    def "GET /api/cached/details/{foreignId} should return ocr data entry from redis"() {
+    def "GET /api/cached/details/{foreignId} should return ocr data entry by foreign id from redis"() {
         given: "ocr data in redis exist"
         def ocrData = createRedisOcrData()
 
@@ -84,6 +88,22 @@ class OcrDataControllerSpec extends SpecBaseIT {
                 .andExpect(jsonPath('$.createdAt').value(ocrData.createdAt.toString()))
     }
 
+    def "GET /api/cached/details/{foreignId} should return 404 if ocr data by foreign id not found in redis"() {
+        given: "foreign id to find by"
+        def foreignId = randomId()
+
+        and: "hash operations stub returns null"
+        1 * hashOperations.get(_, foreignId) >> null
+
+        when: "GET /api/cached/details/{foreignId} is called"
+        def response = mockMvc.perform(get("/api/cached/details/{foreignId}", foreignId))
+
+        then: "response status is 404"
+        response
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath('$.[0].code').value("NOT_FOUND"))
+    }
+
     def "GET /api/cached/flush should delete ocr data entries from redis"() {
         given: "multiple ocr data entries in redis exist"
         createRedisOcrData()
@@ -93,9 +113,21 @@ class OcrDataControllerSpec extends SpecBaseIT {
         when: "GET /api/cached/flush is called"
         def response = mockMvc.perform(get("/api/cached/flush"))
 
-        then: "status 200 is returned"
+        then: "response status 200 is returned"
+        response.andExpect(status().isOk())
+    }
+
+    def "GET /api/cached/flush should return 404 when no ocr data entries exist in redis"() {
+        given: "hash operations stub returns empty list"
+        1 * hashOperations.values(_) >> []
+
+        when: "GET /api/cached/flush is called"
+        def response = mockMvc.perform(get("/api/cached/flush"))
+
+        then: "response status is 404"
         response
-                .andExpect(status().isOk())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath('$.[0].code').value("NOT_FOUND"))
     }
 
     def "POST /api/migration/ocr with valid dto should return new object"() {
