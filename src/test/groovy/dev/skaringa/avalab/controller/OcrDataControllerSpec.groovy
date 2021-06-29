@@ -10,6 +10,7 @@ import org.springframework.test.jdbc.JdbcTestUtils
 import java.time.LocalDateTime
 
 import static java.time.format.DateTimeFormatter.ofPattern
+import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.hasSize
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -44,6 +45,57 @@ class OcrDataControllerSpec extends SpecBaseIT {
                 .andExpect(jsonPath('$.[0].externalId').value(ocrData.externalId))
                 .andExpect(jsonPath('$.[0].word').value(ocrData.word))
                 .andExpect(jsonPath('$.[0].createdAt').value(ocrData.createdAt.toString()))
+    }
+
+    def "GET /api/cached/all should return all ocr data entries from redis"() {
+        given: "multiple ocr data entries in redis exist"
+        def entries = [createRedisOcrData(), createRedisOcrData(), createRedisOcrData()]
+
+        when: "GET /api/cached/all is called"
+        def response = mockMvc.perform(get("/api/cached/all"))
+
+        then: "ocr data entries is returned"
+        def ids = entries.collect({ it.id.toLong() }).toArray()
+        def externalIds = entries.collect({ it.externalId.toLong() }).toArray()
+        def words = entries.collect({ it.word }).toArray()
+        def createdAtDates = entries.collect({ it.createdAt.toString() }).toArray()
+        response
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$', hasSize(3)))
+                .andExpect(jsonPath('$.[*].id', containsInAnyOrder(ids)))
+                .andExpect(jsonPath('$.[*].externalId', containsInAnyOrder(externalIds)))
+                .andExpect(jsonPath('$.[*].word', containsInAnyOrder(words)))
+                .andExpect(jsonPath('$.[*].createdAt', containsInAnyOrder(createdAtDates)))
+    }
+
+    def "GET /api/cached/details/{foreignId} should return ocr data entry from redis"() {
+        given: "ocr data in redis exist"
+        def ocrData = createRedisOcrData()
+
+        when: "GET /api/cached/details/{foreignId} is called"
+        def response = mockMvc.perform(get("/api/cached/details/{foreignId}", ocrData.externalId))
+
+        then: "ocr data is returned"
+        response
+                .andExpect(status().isOk())
+                .andExpect(jsonPath('$.id').value(ocrData.id))
+                .andExpect(jsonPath('$.externalId').value(ocrData.externalId))
+                .andExpect(jsonPath('$.word').value(ocrData.word))
+                .andExpect(jsonPath('$.createdAt').value(ocrData.createdAt.toString()))
+    }
+
+    def "GET /api/cached/flush should delete ocr data entries from redis"() {
+        given: "multiple ocr data entries in redis exist"
+        createRedisOcrData()
+        createRedisOcrData()
+        createRedisOcrData()
+
+        when: "GET /api/cached/flush is called"
+        def response = mockMvc.perform(get("/api/cached/flush"))
+
+        then: "status 200 is returned"
+        response
+                .andExpect(status().isOk())
     }
 
     def "POST /api/migration/ocr with valid dto should return new object"() {

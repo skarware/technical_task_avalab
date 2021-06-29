@@ -23,6 +23,21 @@ public class OcrDataController {
         return ocrDataService.getAll();
     }
 
+    @GetMapping("cached/all")
+    public List<OcrData> getCachedAll() {
+        return ocrDataService.getAllCached();
+    }
+
+    @GetMapping("cached/details/{foreignId}")
+    public OcrData getByForeignIdCached(@PathVariable Long foreignId) {
+        return ocrDataService.getByForeignIdCached(foreignId);
+    }
+
+    @GetMapping("cached/flush")
+    public void flushCached() {
+        ocrDataService.flushCached();
+    }
+
     @PostMapping("migration/ocr")
     public OcrData create(@Valid @RequestBody CreatableOcrData creatableOcrData) {
         return ocrDataService.create(creatableOcrData);

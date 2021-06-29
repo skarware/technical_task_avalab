@@ -2,6 +2,7 @@ package dev.skaringa.avalab
 
 import dev.skaringa.avalab.provider.OcrDataProvider
 import dev.skaringa.avalab.repository.OcrDataRepository
+import dev.skaringa.avalab.repository.RedisRepository
 import groovy.json.JsonGenerator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -34,6 +35,9 @@ abstract class SpecBaseIT extends Specification {
     @Autowired
     private OcrDataRepository ocrDataRepository
 
+    @Autowired
+    private RedisRepository redisRepository
+
     protected static def randomId() {
         return RANDOM.nextLong()
     }
@@ -45,5 +49,10 @@ abstract class SpecBaseIT extends Specification {
     protected def createOcrData(Map<String, Object> props = [:]) {
         def ocrData = OcrDataProvider.entity([foreign_id: randomId(), word: randomString()] + props)
         return ocrDataRepository.save(ocrData)
+    }
+
+    protected def createRedisOcrData(Map<String, Object> props = [:]) {
+        def ocrData = OcrDataProvider.entity([id: randomId(), foreign_id: randomId(), word: randomString()] + props)
+        return redisRepository.save(ocrData)
     }
 }
