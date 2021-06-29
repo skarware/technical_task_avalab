@@ -6,7 +6,7 @@ Yet another technical task for a dream job
 ##### Simple REST-alike API for ocr data creation in database an caching in Redis.
 
 One of job tasks I got while looking for my second software developer position.\
-Application made using <i><b>Java 11, Spring Boot v2.5.1, Spring Web, Spring Data JPA, H2-in-memory-database, Redis, Swagger, Spock + Groovy, Flyway, Lombok and Maven</b></i>.
+Application made using <i><b>Java 11, Spring Boot v2.5.1, Spring Web, Spring Data JPA, Spring Data Redis, H2-in-memory-database, Hibernate, Redis, Swagger, Spock + Groovy, Flyway, Lombok and Maven, ...</b></i>.
  
 Made a decent effort to write clean OOP code to my Date.now() best understanding.
 
