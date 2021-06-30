@@ -36,4 +36,5 @@ Or using your installed maven version:
 ```
 mvn clean spring-boot:run
 ```
-<b>For interacting with API one can use <b><i>Swagger</i></b> on http://localhost:8080/swagger-ui/
+## Swagger UI
+For interacting with application API one can use a browser to reach <b><i>Swagger UI</i></b>, if you run app on a local machine, by hitting URL: http://localhost:8080/swagger-ui/
