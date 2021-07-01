@@ -104,8 +104,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             return HttpStatus.BAD_REQUEST;
         } else if (errors.stream().anyMatch(error -> error.getCode() == ErrorCode.NOT_FOUND)) {
             return HttpStatus.NOT_FOUND;
-        } else
+        }
 
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 }
